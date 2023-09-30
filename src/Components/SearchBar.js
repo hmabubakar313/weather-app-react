@@ -1,13 +1,16 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios'
-import HourlyForecastCard from './HourlyForecast';
+import DailyForecast from './DailyForecast'
+import HourlyForecast from './HourlyForecast'
 
 function ApiCall() {
   const weatherKey = '970e51d81ae2059072ee1e195d4a3db5';
- 
+
   const [weather, setWeather] = useState({});
   const [locations, setLocations] = useState('Lahore');
-  
+  const [dailyForecast, setDailyForecast] = useState([]);
+  const [hourlyForecast, sethourlyForecast] = useState([])
+
   const handleSearch = () => {
     fetch(
       `http://api.openweathermap.org/data/2.5/weather?q=${locations}&APPID=${weatherKey}&units=metric`
@@ -30,10 +33,27 @@ function ApiCall() {
       })
       .catch((error) => console.log(error));
 
-    
+
   };
 
-  const [hourlyForecast, setHourlyForecast] = useState([]);
+
+  const fetchDailyForecast = async () => {
+    try {
+      const response = await axios.get(
+        `http://api.openweathermap.org/data/2.5/forecast?q=${locations}&APPID=${weatherKey}&units=metric&cnt=7`
+      );
+      const dailyData = response.data.list;
+      console.log(dailyData);
+      setDailyForecast(dailyData);
+    } catch (error) {
+      console.error('Error fetching daily forecast:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchDailyForecast();
+    fetchHourlyForecast();
+  }, [locations]);
 
   const fetchHourlyForecast = async () => {
     try {
@@ -41,16 +61,13 @@ function ApiCall() {
         `http://api.openweathermap.org/data/2.5/forecast?q=${locations}&APPID=${weatherKey}&units=metric`
       );
       const hourlyData = response.data.list;
-      console.log(hourlyData)
-      setHourlyForecast(hourlyData);
+      console.log('hourlyData', hourlyData);
+      sethourlyForecast(hourlyData);
     } catch (error) {
-      console.error('Error fetching hourly forecast:', error);
+      console.error('Error fetching daily forecast:', error);
     }
   };
 
-  useEffect(() => {
-    fetchHourlyForecast();
-  }, [locations]); 
 
   return (
     <div>
@@ -65,24 +82,42 @@ function ApiCall() {
         <button onClick={handleSearch}>Search</button>
       </div>
       <div className="weather-data">
-        
+
         <p className='temp'>Temperature: {weather?.main?.temp}°C</p>
         <p className='data'>Description: {weather?.weather?.[0]?.description}</p>
         <p className='long'>Long : {weather?.coord?.lon} Lat: {weather?.coord?.lat}  </p>
       </div>
-      <div className="hourly-forecast">
-        {hourlyForecast.map((hourData) => (
-          <HourlyForecastCard
-            key={hourData.dt}
-            hour={hourData.dt_txt} 
-            temperature={hourData.main.temp}
-            icon={hourData.weather.icon}
-
-            
-          />
-        ))}
+      <div className='row'>
+        <div className='col-md-4'>
+          <div className="card" >
+            {dailyForecast.map((dailyData) => (
+              <DailyForecast
+                key={dailyData.dt}
+                hour={dailyData.dt_txt}
+                temperature={dailyData.main.temp}
+                icon={dailyData.weather.icon}
+              />
+            ))}
+          </div>
+        </div>
+        <div className='card'>
+          <div className='col-md-8'>
+            <div className="d-flex flex-row">
+              {hourlyForecast.map((hourData, index) => (
+                <HourlyForecast
+                  key={index}
+                  hour={hourData.dt}
+                  temperature={hourData.main.temp}
+                  icon={hourData.weather.icon}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
-      
+
+
+
     </div>
   );
 }

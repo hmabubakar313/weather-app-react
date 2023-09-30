@@ -12,9 +12,9 @@ code {
     monospace;
 }
 
-.hourly-forecast-card {
-  background-color: #f5f5f5; 
-  border: 1px solid #ccc; 
+.card {
+  background-color: #6f8199; 
+  /* border: 1px solid #ccc;  */
   border-radius: 8px; 
   padding: 10px; 
   display: flex; 
@@ -22,10 +22,12 @@ code {
   align-items: center; 
   text-align: center; 
   margin: 5px; 
-  width: 150px; 
+  width: 300px;
+  height: 300px; 
+  
 }
 
-.hourly-forecast-card p {
+.main-card tr {
   margin: 0; 
   padding: 5px; 
 }
@@ -33,5 +35,15 @@ code {
 .hourly-forecast-card img {
   max-width: 50px; 
   max-height: 50px; 
+  /* padding-left: 10px; */
 }
+
+
+.card-md {
+  background-color: #6f8199; 
+  margin-bottom: 20px; 
+  border-radius: 10px; 
+}
+
+
 
