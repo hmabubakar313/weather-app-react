@@ -12,9 +12,11 @@ code {
     monospace;
 }
 
-.card {
-  background-color: #6f8199; 
-  /* border: 1px solid #ccc;  */
+.daily-card {
+  background-color: #6f8199 !important; 
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  
+  border: 1px solid #ccc; 
   border-radius: 8px; 
   padding: 10px; 
   display: flex; 
@@ -27,23 +29,98 @@ code {
   
 }
 
-.main-card tr {
+.daily-card tr {
   margin: 0; 
   padding: 5px; 
 }
 
-.hourly-forecast-card img {
+.daily-card img {
   max-width: 50px; 
   max-height: 50px; 
   /* padding-left: 10px; */
 }
 
 
-.card-md {
-  background-color: #6f8199; 
-  margin-bottom: 20px; 
-  border-radius: 10px; 
+.hourly-card {
+  background-color: #6f8199 !important;
+  overflow-x: auto; 
+}
+
+.hourly-card .d-flex {
+  flex-wrap: nowrap; 
+  justify-content: flex-start; 
+}
+
+.hourly-card .hourly-forecast-card {
+  min-width: 200px; 
+  margin-right: 10px; 
 }
 
 
 
+
+
+
+body {
+  background-color: #f9f9fa
+}
+
+.flex {
+  -webkit-box-flex: 1;
+  -ms-flex: 1 1 auto;
+  flex: 1 1 auto
+}
+
+@media (max-width:991.98px) {
+  .padding {
+      padding: 1.5rem
+  }
+}
+
+@media (max-width:767.98px) {
+  .padding {
+      padding: 1rem
+  }
+}
+
+.padding {
+  padding: 5rem
+}
+
+.card {
+  background: #fff;
+  border-width: 0;
+  border-radius: .25rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .05);
+  margin-bottom: 1.5rem
+}
+
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  word-wrap: break-word;
+  background-color: #fff;
+  background-clip: border-box;
+  border: 1px solid rgba(19, 24, 44, .125);
+  border-radius: .25rem
+}
+
+.card-header {
+  padding: .75rem 1.25rem;
+  margin-bottom: 0;
+  background-color: rgba(19, 24, 44, .03);
+  border-bottom: 1px solid rgba(19, 24, 44, .125)
+}
+
+.card-header:first-child {
+  border-radius: calc(.25rem - 1px) calc(.25rem - 1px) 0 0
+}
+
+card-footer,
+.card-header {
+  background-color: transparent;
+  border-color: rgba(160, 175, 185, .15);
+  background-clip: padding-box
+}

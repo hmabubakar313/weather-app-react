@@ -2,6 +2,7 @@ import './App.css';
 import ApiCall from './Components/SearchBar';
 
 
+
 function App() {
  
   return (
