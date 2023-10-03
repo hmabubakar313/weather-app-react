@@ -28,10 +28,10 @@ function WeatherChart({ hourlyData }) {
           {
             label: 'Temperature (°C)',
             data: temperatures,
-            borderColor: 'blue',
-            backgroundColor: 'rgba(0, 0, 255, 0.2)',
+            borderColor: 'white',
+            backgroundColor: '#58697a',
             borderWidth: 1,
-            fill: true,
+            fill: false,
           },
         ],
       },

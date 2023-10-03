@@ -3,13 +3,14 @@ import axios from 'axios'
 import DailyForecast from './DailyForecast'
 import HourlyForecast from './HourlyForecast'
 import CreateWeatherChart from './ChartForecast';
+import UV from './UV';
 function ApiCall() {
   const weatherKey = '970e51d81ae2059072ee1e195d4a3db5';
-  const startDate = new Date('2023-10-01T00:00:00Z'); 
-const endDate = new Date('2023-12-31T23:59:59Z');   
+  const startDate = new Date('2023-10-01T00:00:00Z');
+  const endDate = new Date('2023-12-31T23:59:59Z');
 
-const startTimestamp = Math.floor(startDate.getTime() / 1000);
-const endTimestamp = Math.floor(endDate.getTime() / 1000);
+  const startTimestamp = Math.floor(startDate.getTime() / 1000);
+  const endTimestamp = Math.floor(endDate.getTime() / 1000);
 
 
   const [weather, setWeather] = useState({});
@@ -51,6 +52,8 @@ const endTimestamp = Math.floor(endDate.getTime() / 1000);
           `http://api.openweathermap.org/data/2.5/forecast?q=${locations}&APPID=${weatherKey}&units=metric&cnt=7&start_date=${startTimestamp}&end_date=${endTimestamp}`
         );
         const dailyData = response.data.list;
+
+
         setDailyForecast(dailyData);
       } catch (error) {
         console.error('Error fetching daily forecast:', error);
@@ -60,12 +63,16 @@ const endTimestamp = Math.floor(endDate.getTime() / 1000);
     const fetchHourlyForecast = async () => {
       try {
         const response = await axios.get(
-          `http://api.openweathermap.org/data/2.5/forecast?q=${locations}&APPID=${weatherKey}&units=metric&start_date=${startTimestamp}&end_date=${endTimestamp}`
+          `http://api.openweathermap.org/data/2.5/forecast?q=${locations}&APPID=${weatherKey}&units=metric`
         );
-        
-        const hourlyData = response.data.list;
+
+        const hourlyData = response.data.list.slice(0, 5);
+        // console.log(hourlyData);
+
+
+        // const hourlyData = response.data.list;
         console.log('hourlyData', hourlyData);
-        
+
         sethourlyForecast(hourlyData);
       } catch (error) {
         console.error('Error fetching hourly forecast:', error);
@@ -96,59 +103,60 @@ const endTimestamp = Math.floor(endDate.getTime() / 1000);
         <p className='data'>Description: {weather?.weather?.[0]?.description}</p>
         <p className='long'>Long : {weather?.coord?.lon} Lat: {weather?.coord?.lat}  </p>
       </div>
-      <div className='row'>
-        <div class="page-content page-container" id="page-content">
-          <div class="padding">
-            <div class="container-fluid d-flex justify-content-center">
-              <div class="col-sm-8 col-md-6">
-                <div class="card">
-                  <div class="card-header">Bar chart</div>
-                  <div class="card-body" style={{ height: '420px' }}>
-                    <canvas id="weather-chart" class="chartjs-render-monitor">
-                      <CreateWeatherChart hourlyData={hourlyForecast} />
-       
-                    </canvas>
-                  </div>
-                </div>
-              </div>
+      <div className="row">
+        <div className="col-md-4">
+          <div className="card chart-card">
+            <div className="card-header">Bar chart</div>
+            <div className="card-body">
+              <canvas id="weather-chart" className="chartjs-render-monitor">
+                <CreateWeatherChart hourlyData={hourlyForecast} />
+              </canvas>
             </div>
           </div>
         </div>
-
-        <div className='col-md-4'>
-
-
-        
-
-
-          <div className="card daily-card" >
-            {dailyForecast.map((dailyData) => (
-              <DailyForecast
-                key={dailyData.dt}
-                hour={dailyData.dt_txt}
-                temperature={dailyData.main.temp}
-                icon={dailyData.weather[0].icon}
-              />
-            ))}
-          </div>
-        </div>
-        <div className='col-md-8'>
-          <div className="card hourly-card">
-            <div className='d-flex flex-row'>
+        <div className="col-md-8">
+          <div className="card">
+            <div className="card-body hourly-card">
               {hourlyForecast.map((hourData, index) => (
                 <HourlyForecast
                   key={index}
                   hour={hourData.dt_txt}
                   temperature={hourData.main.temp}
-                  icon={hourData.weather[0].icon}
+                  icon={`http://openweathermap.org/img/w/${hourData.weather[0].icon}.png`}
+
                 />
               ))}
             </div>
           </div>
         </div>
       </div>
-
-
+      {/* row ended here */}
+      <div className='row'>
+        <div className='col-sm-4'>
+          <div className='card'>
+              <div className='card-body daily-card'>
+                {dailyForecast.map((dailyData) => (
+                  <DailyForecast
+                    key={dailyData.dt}
+                    hour={dailyData.dt_txt}
+                    icon={`http://openweathermap.org/img/w/${dailyData.weather[0].icon}.png`}
+                    min={dailyData.main.temp_min}
+                    maxTemp={dailyData.main.temp_max}
+                  />
+                ))}
+              </div>
+          </div>
+        </div>
+        {/* col end here  */}
+        
+          <div className='col-sm-4'>
+            {
+              console.log('dailyForecast',dailyForecast)
+            }
+          <UV dailyData={dailyForecast} />
+          </div>
+        
+      </div>
 
 
     </div>
