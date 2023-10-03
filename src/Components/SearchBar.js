@@ -87,22 +87,27 @@ function ApiCall() {
 
   return (
     <div>
-      <h1>{locations}</h1>
-      <div className="search-bar">
-        <input
-          type="text"
-          placeholder="Enter location"
-          value={locations}
-          onChange={(e) => setLocations(e.target.value)}
-        />
-        <button onClick={handleSearch}>Search</button>
+      <div className='row'>
+        <div className='container-fluid'>
+          <h1 className='location'>{locations}</h1>
+          <div className="weather-data">
+            {weather ? (
+              <div className=''>
+                <p className='temp'>{weather.main?.temp}°C</p>
+                <p className='data'>Description: {weather?.weather?.[0]?.description}</p>
+                <p className='long'>
+                  Long : {weather?.coord?.lon} Lat: {weather?.coord?.lat}
+                </p>
+              </div>
+            ) : (
+              <p>Loading weather data...</p>
+            )}
+          </div>
+        </div>
       </div>
-      <div className="weather-data">
 
-        <p className='temp'>Temperature: {weather?.main?.temp}°C</p>
-        <p className='data'>Description: {weather?.weather?.[0]?.description}</p>
-        <p className='long'>Long : {weather?.coord?.lon} Lat: {weather?.coord?.lat}  </p>
-      </div>
+
+
       <div className="row">
         <div className="col-md-4">
           <div className="card chart-card">
@@ -115,15 +120,16 @@ function ApiCall() {
           </div>
         </div>
         <div className="col-md-8">
-          <div className="card">
-            <div className="card-body hourly-card">
-              {hourlyForecast.map((hourData, index) => (
+          <div className="card hourly-card">
+            <div className="card-header">Bar chart</div>
+            <div className="card-body">
+            {hourlyForecast.map((hourlyData) => (
                 <HourlyForecast
-                  key={index}
-                  hour={hourData.dt_txt}
-                  temperature={hourData.main.temp}
-                  icon={`http://openweathermap.org/img/w/${hourData.weather[0].icon}.png`}
-
+                  key={hourlyData.dt}
+                  hour={hourlyData.dt_txt}
+                  icon={`http://openweathermap.org/img/w/${hourlyData.weather[0].icon}.png`}
+                  min={hourlyData.main.temp_min}
+                  maxTemp={hourlyData.main.temp_max}
                 />
               ))}
             </div>
@@ -133,29 +139,30 @@ function ApiCall() {
       {/* row ended here */}
       <div className='row'>
         <div className='col-sm-4'>
-          <div className='card'>
-              <div className='card-body daily-card'>
-                {dailyForecast.map((dailyData) => (
-                  <DailyForecast
-                    key={dailyData.dt}
-                    hour={dailyData.dt_txt}
-                    icon={`http://openweathermap.org/img/w/${dailyData.weather[0].icon}.png`}
-                    min={dailyData.main.temp_min}
-                    maxTemp={dailyData.main.temp_max}
-                  />
-                ))}
-              </div>
+          <div className='card daily-card'>
+            <div className='card-body '>
+              <div>  <h2 className='card-title'>Daily Forecast</h2></div>
+              {dailyForecast.map((dailyData) => (
+                <DailyForecast
+                  key={dailyData.dt}
+                  hour={dailyData.dt_txt}
+                  icon={`http://openweathermap.org/img/w/${dailyData.weather[0].icon}.png`}
+                  min={dailyData.main.temp_min}
+                  maxTemp={dailyData.main.temp_max}
+                />
+              ))}
+            </div>
           </div>
         </div>
         {/* col end here  */}
-        
-          <div className='col-sm-4'>
-            {
-              console.log('dailyForecast',dailyForecast)
-            }
+
+        <div className='col-sm-4'>
+          {
+            console.log('dailyForecast', dailyForecast)
+          }
           <UV dailyData={dailyForecast} />
-          </div>
-        
+        </div>
+
       </div>
 
 

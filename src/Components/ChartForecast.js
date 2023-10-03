@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { Chart } from 'chart.js/auto';
-import "chartjs-adapter-moment";
+import 'chartjs-adapter-moment';
 import moment from 'moment';
 
 function WeatherChart({ hourlyData }) {
@@ -11,7 +11,9 @@ function WeatherChart({ hourlyData }) {
   }, [hourlyData]);
 
   const createWeatherChart = (hourlyData) => {
-    const labels = hourlyData.map((hourData) => moment(hourData.dt_txt).format('MMM D, HH:mm'));
+    const labels = hourlyData.map((hourData) =>
+      moment(hourData.dt_txt).format('MMM D, HH:mm')
+    );
     const temperatures = hourlyData.map((hourData) => hourData.main.temp);
 
     const ctx = document.getElementById('weather-chart').getContext('2d');
@@ -26,49 +28,71 @@ function WeatherChart({ hourlyData }) {
         labels: labels,
         datasets: [
           {
-            label: 'Temperature (°C)',
+            label: 'Current Temperature (°C)',
             data: temperatures,
-            borderColor: 'white',
-            backgroundColor: '#58697a',
-            borderWidth: 1,
-            fill: false,
+            backgroundColor: (context) => {
+              const value = context.dataset.data[context.dataIndex];
+              const gradient = context.chart.ctx.createLinearGradient(0, 0, 0, 200);
+              gradient.addColorStop(0, `rgba(255, 255, 255, 1)`);
+              gradient.addColorStop(1, `rgba(88, 105, 122, ${value / 100})`);
+              return gradient;
+            },
           },
         ],
+        
+        
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        title: {
-          display: true,
-          text: 'Hourly Temperature Forecast',
-          fontSize: 16,
+        plugins: {
+          legend: {
+            display: false, // Hide legend
+          },
         },
         scales: {
           x: {
             type: 'time',
             time: {
-              unit: 'hour',
+              unit: 'minute',
+              unitStepSize: 10, // Display x-axis label every 10 minutes
               displayFormats: {
-                hour: 'MMM D, HH:mm',
+                minute: 'mm',
               },
             },
             title: {
               display: true,
-              text: 'Time',
+              text: 'Time', 
+              color: 'white',
+              font: {
+                size: 20,
+                style: 'normal',
+              },
+            },
+            ticks: {
+              color: 'white',
+              font: {
+                size: 16,
+                style: 'normal',
+              },
             },
           },
-          y: {
-            title: {
-              display: true,
-              text: 'Temperature (°C)',
-            },
-          },
+          
         },
       },
+      
     });
   };
 
-  return <canvas id="weather-chart" width="400" height="200"></canvas>;
+  const currentTemperature = hourlyData.length > 0 ? hourlyData[hourlyData.length - 1].main.temp : '';
+
+  return (
+    <div>
+      <h3 style={{ color: 'white', fontSize: '16px', marginBottom: '10px' }}>Current Temperature</h3>
+      <p style={{ color: 'white', fontSize: '18px', fontWeight: 'bold' }}>{currentTemperature}&deg;C</p>
+      <canvas id="weather-chart" width="400" height="200"></canvas>
+    </div>
+  );
 }
 
 export default WeatherChart;
