@@ -16,37 +16,4 @@ body
   background-color: lightblue;
 }
 
-/* .daily-card {
-  background-color: #6f8199 !important; 
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-  
-  border: 1px solid #ccc; 
-  border-radius: 8px; 
-  padding: 10px; 
-  display:inline-block;
-  align-items: center; 
-  text-align: center; 
-  margin: 5px; 
-  width: 300px;
-  height: 300px; 
-  
-} */
 
-.chart-card{
-  position: relative;
-  background-color: #6f8199 !important;
-  min-width: 0;
-  min-height: 10px;
-  word-wrap: break-word;
-  border: 1px solid rgba(19, 24, 44, .125);
-  border-radius: .25rem
-}
-
-.hourly-card{
-  height: auto;
-  width: auto;
-  display: inline;
-
-  /* border: 1px solid green; */
-  background-color: #6f8199;  
-}

@@ -15,7 +15,7 @@ const fetchDailyForecast = ({ hour, maxTemp, min, icon }) => {
             </td>
             <td>
               <tr>
-                <img src={icon} alt='Icon'/>
+                <i className={icon}></i>
               </tr>
               
             </td>

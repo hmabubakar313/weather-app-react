@@ -17,6 +17,11 @@ function WeatherChart({ hourlyData }) {
     const temperatures = hourlyData.map((hourData) => hourData.main.temp);
 
     const ctx = document.getElementById('weather-chart').getContext('2d');
+    const gradient = ctx.createLinearGradient(0, 0, 0, 400); 
+
+  gradient.addColorStop(0, 'rgba(70, 130, 180, 1)');  
+  gradient.addColorStop(1, 'rgba(173, 216, 230, 1)'); 
+
 
     if (chartRef.current) {
       chartRef.current.destroy();
@@ -30,13 +35,7 @@ function WeatherChart({ hourlyData }) {
           {
             label: 'Current Temperature (°C)',
             data: temperatures,
-            backgroundColor: (context) => {
-              const value = context.dataset.data[context.dataIndex];
-              const gradient = context.chart.ctx.createLinearGradient(0, 0, 0, 200);
-              gradient.addColorStop(0, `rgba(255, 255, 255, 1)`);
-              gradient.addColorStop(1, `rgba(88, 105, 122, ${value / 100})`);
-              return gradient;
-            },
+            backgroundColor: gradient, 
           },
         ],
         

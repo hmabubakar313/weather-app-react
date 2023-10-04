@@ -1,155 +1,84 @@
-.App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-body
-{
+body {
   background-image: url('./photo-1482005253821-5d6a2c685879.jpeg');
   background-repeat: no-repeat;
-  background-attachment: fixed;  
+  background-attachment: fixed;
   background-size: cover;
 }
-.location{
+
+.weather-data {
+  color: white;
+  margin-top: 10%;
+  font-family: sans-serif;
+  text-align: center;
+  font-size: 20px;
+}
+
+.weather-data h2 {
+  font-size: 30px;
+  text-align: center;
   color: white;
   font-family: sans-serif;
-  font-size: 60px;
 }
-.temp{
-  color:white;
-  font-family: sans-serif;
-  font-size: 50px;
-}
-.data{
-  color:white;
-  font-family: sans-serif;
-  font-size: 50px;
-}
-.long{
-  color:white;
-  font-family: sans-serif;
-  font-size: 50px;
+
+.temp, .data, .long {
+  font-size: 24px;
 }
 
 
-.hourly-forecast-card {
-  display: inline-block;
-  margin: 5px;
-  padding: 10px;
-  opacity: 0.8;
-  /* text-align: center; */
-  width: 200px; 
-  opacity: 0.9;
-  /* box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); */
-  color: white;
 
-  /* border-radius: 8px; */
-  padding: 10px;
-  margin-bottom: 10px;
-}
-.hourly-card
-{
-  margin-right: 10px;
-  background-color: #58697a !important
-}
-.hourly-card .card-header
-{
-  color: white;
-  text-align: left;
-  opacity: 0.8;
-}
 
 .hour, .temperature, .weather-icon {
   display: block;
   font-size: 16px;
   font-weight: bold;
-  margin-bottom: 5px;
 }
 
 .weather-icon {
-  margin-top: 10px;
+  margin-top: 15px;
+}
+
+.hourly-forecast-card {
+  display: inline-block;
+  vertical-align: middle;
+
+  
+  color: white;
 }
 
 .hourly-card {
-  background-color: #58697a;
-  padding: 20px;
-  border-radius: 10px;
+  overflow-x: auto;
+  
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
   white-space: nowrap; 
-  overflow-x: auto; 
-  display: flex;
+  /* display: flex; */
   justify-content: space-between; 
   align-items: center;
-   opacity: 0.9;
+  opacity: 0.9;
+  background-color: #58697a !important;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
-  padding: 10px;
-  margin-bottom: 10px;
 }
+
 
 .daily-card {
   background-color: #58697a !important;
-  padding: 10px;
-  margin-bottom: 10px;
-  margin-top: 20px;
   display: table-column;
-  margin-left: 10px;
   opacity: 0.8;
   color: white !important;
-  
 }
-.daily-card h2
-{
+
+.daily-card h2 {
   font-size: 20px;
   text-align: left;
-  
 }
+
 table td {
   margin: 10px;
   padding: 10px;
 }
 
-table tr {
-  margin-bottom: 20px;
-}
-
-
 .chart-card {
   border-radius: 10px;
-  margin-left: 10px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
 
@@ -160,35 +89,37 @@ table tr {
   text-align: left;
 }
 
-.chart-card .card-body canvas {
-  padding: 20px;
-}
-
 .chart-card .card-body .chart-title {
   color: #58697a;
   font-weight: bold;
   font-size: 16px;
 }
+.chart-card{
+  position: relative;
+  background-color: #6f8199 !important;
+  min-width: 0;
+  min-height: 10px;
+  word-wrap: break-word;
+  border: 1px solid rgba(19, 24, 44, .125);
+  border-radius: .25rem
+}
 
 
- .uv-index-card {
+.uv-index-card {
   background-color: #58697a !important;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  padding: 16px;
   text-align: center;
-  margin-top: 20px;
 }
 
 .uv-index-title {
   font-size: 18px;
-  margin-bottom: 8px;
 }
 
 .uv-index-number {
   font-size: 24px;
   font-weight: bold;
-  color: #007bff; /* Change the color to your preference */
+  color: #007bff;
   margin-bottom: 4px;
 }
 
@@ -198,5 +129,5 @@ table tr {
 
 .uv-index-unavailable {
   font-size: 14px;
-  color: #f00; /* Change the color to indicate unavailability */
+  color: #f00;
 }

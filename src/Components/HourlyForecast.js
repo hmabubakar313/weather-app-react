@@ -5,7 +5,7 @@ const FetchHourlyForecast = ({ hour, temperature, icon }) => {
     <div className="hourly-forecast-card">
       <p>{hour}</p>
       <p>{temperature}&deg;C</p>
-      <img src={icon} alt="Weather Icon" />
+      <i className={icon}></i>
     </div>
   );
 }
