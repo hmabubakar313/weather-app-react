@@ -1,15 +1,12 @@
-import './App.css';
-import ApiCall from './Components/SearchBar';
+import "./App.css";
+import ApiCall from "./Components/SearchBar";
 
-
+// asd
 
 function App() {
- 
   return (
     <div className="App">
-    <ApiCall/>
-
-      
+      <ApiCall />
     </div>
   );
 }
