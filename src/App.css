@@ -40,6 +40,8 @@ body {
 .hourly-forecast-card {
   display: inline-block;
   vertical-align: middle;
+  margin-right: 20px ;
+  
 
   
   color: white;

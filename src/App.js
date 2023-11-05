@@ -1,7 +1,7 @@
 import "./App.css";
-import ApiCall from "./Components/SearchBar";
+import ApiCall from "./Components/ApiCall";
 
-// asd
+
 
 function App() {
   return (
