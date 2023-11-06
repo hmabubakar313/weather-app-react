@@ -138,11 +138,11 @@ function ApiCall() {
           `http://api.openweathermap.org/data/2.5/forecast?q=${locations}&APPID=${weatherKey}&units=metric`
         );
 
-        const hourlyData = response.data.list.slice(0, 9);
-        // console.log(hourlyData);
+        const hourlyData = response.data.list.slice(0, 14);
+        console.log("in the fetch hourly forecast",hourlyData);
 
         // const hourlyData = response.data.list;
-        console.log("hourlyData", hourlyData);
+       
 
         sethourlyForecast(hourlyData);
       } catch (error) {
@@ -155,16 +155,16 @@ function ApiCall() {
   }, []);
 
   return (
-    <div>
+    <>
       <div className="row">
-        <div className="container-fluid">
+        <div className="container-fluid p-0">
           {dailyForecast && dailyForecast.length > 0 ? (
             <div className="weather-data">
               <h1 className="location">{locations}</h1>
               <h2 className="temp">{dailyForecast[0].main?.temp}°C</h2>
               {/* <p className='long'>
-  Long: {dailyForecast[0]?.coord?.lon} Lat: {dailyForecast[0]?.coord?.lat}
-</p> */}
+              Long: {dailyForecast[0]?.coord?.lon} Lat: {dailyForecast[0]?.coord?.lat}
+        </p> */}
             </div>
           ) : (
             <p>Loading weather data...</p>
@@ -172,39 +172,27 @@ function ApiCall() {
         </div>
       </div>
 
-      <div className="parent-card">
-        <div className="row">
-          <div className="col-sm-12 col-md-6 col-lg-4">
-            <div className="card chart-card">
-              <div className="card-header">Bar chart</div>
-              <div className="card-body">
-                <canvas id="weather-chart" className="chartjs-render-monitor">
-                  <CreateWeatherChart hourlyData={hourlyForecast} />
-                </canvas>
-              </div>
-            </div>
-          </div>
-          <div className="col-sm-12 col-md-6 col-lg-8">
-            <div className="card hourly-card">
-              <div className="card-header">HourlyForecast</div>
-              <div className="card-body">
-              
-                  {hourlyForecast.map((hourlyData) => (
-                    <HourlyForecast
-                      key={hourlyData.dt}
-                      hour={hourlyData.dt_txt.split(" ")[1].slice(0, 5)}
-                      icon={weatherIcons[hourlyData.weather[0].icon]}
-                      min={hourlyData.main.temp_min}
-                      maxTemp={hourlyData.main.temp_max}
-                    />
-                  ))}
-              
-              </div>
+      <div className="row ">
+        <div className="col-sm-12 col-md-6 col-lg-8">
+          <div className="card hourly-card">
+            <div className="card-title card-hourly-card">HourlyForecast123</div>
+            <div className="card-body">
+              {hourlyForecast.map((hourlyData) => (
+                <HourlyForecast
+                  key={hourlyData.dt}
+                  hour={hourlyData.dt_txt.split(" ")[1].slice(0, 5)}
+                  icon={weatherIcons[hourlyData.weather[0].icon]}
+                  min={hourlyData.main.temp_min}
+                  maxTemp={hourlyData.main.temp_max}
+                />
+              ))}
             </div>
           </div>
         </div>
-        {/* First row ended here */}
-        <div className="row">
+      </div>
+      {/* First row ended here */}
+
+      {/* <div className="row">
           <div className="col-sm-12 col-md-6 col-lg-4">
             <div className="card daily-card">
               <div className="card-body ">
@@ -224,14 +212,14 @@ function ApiCall() {
               </div>
             </div>
           </div>
-          {/* Second column */}
           <div className="col-sm-12 col-md-6 col-lg-4">
             {console.log("dailyForecast", dailyForecast)}
             <UV dailyData={dailyForecast} />
           </div>
-        </div>
-      </div>
-    </div>
+        </div> */}
+      {/* Second column */}
+     
+    </>
   );
 }
 
