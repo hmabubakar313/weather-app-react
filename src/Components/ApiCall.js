@@ -174,9 +174,9 @@ function ApiCall() {
 
       <div className="row ">
         <div className="col-sm-12 col-md-6 col-lg-8">
-          <div className="card hourly-card">
-            <div className="card-title card-hourly-card">HourlyForecast123</div>
-            <div className="card-body">
+          <div className="card text-light bg-dark">
+            <div className="card-title text-left text-light"> Hourly Forecast</div>
+            <div className="card-body text-center">
               {hourlyForecast.map((hourlyData) => (
                 <HourlyForecast
                   key={hourlyData.dt}
@@ -192,14 +192,15 @@ function ApiCall() {
       </div>
       {/* First row ended here */}
 
-      {/* <div className="row">
+      <div className="row">
           <div className="col-sm-12 col-md-6 col-lg-4">
-            <div className="card daily-card">
-              <div className="card-body ">
-                <div>
-                  {" "}
-                  <h2 className="card-title">Daily Forecast</h2>
+            <div className="card bg-dark text-light">
+            <div>
+                  
+                  <h2 className="card-title text-left">Daily Forecast</h2>
                 </div>
+              <div className="card-body text-center">
+               
                 {dailyForecast.map((dailyData) => (
                   <DailyForecast
                     key={dailyData.dt}
@@ -216,7 +217,7 @@ function ApiCall() {
             {console.log("dailyForecast", dailyForecast)}
             <UV dailyData={dailyForecast} />
           </div>
-        </div> */}
+        </div>
       {/* Second column */}
      
     </>
