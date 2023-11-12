@@ -5,7 +5,7 @@ const UV = ({ dailyData }) => {
   const currentUVI = dailyData.length > 0 ? dailyData[0].uvi : null;
 
   return (
-    <div className="uv-index-card">
+    <div className="uv-index-card bg-dark text-white">
       <h3 className="uv-index-title">UV Index</h3>
       {currentUVI !== null ? (
         <>

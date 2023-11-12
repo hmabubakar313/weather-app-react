@@ -138,11 +138,10 @@ function ApiCall() {
           `http://api.openweathermap.org/data/2.5/forecast?q=${locations}&APPID=${weatherKey}&units=metric`
         );
 
-        const hourlyData = response.data.list.slice(0, 14);
-        console.log("in the fetch hourly forecast",hourlyData);
+        const hourlyData = response.data.list.slice(0, 10);
+        console.log("in the fetch hourly forecast", hourlyData);
 
         // const hourlyData = response.data.list;
-       
 
         sethourlyForecast(hourlyData);
       } catch (error) {
@@ -175,15 +174,17 @@ function ApiCall() {
       <div className="row ">
         <div className="col-sm-12 col-md-6 col-lg-8">
           <div className="card text-light bg-dark">
-            <div className="card-title text-left text-light"> Hourly Forecast</div>
+            <h2 className="card-title text-left text-light">
+              {" "}
+              Hourly Forecast
+            </h2>
             <div className="card-body text-center">
               {hourlyForecast.map((hourlyData) => (
                 <HourlyForecast
                   key={hourlyData.dt}
                   hour={hourlyData.dt_txt.split(" ")[1].slice(0, 5)}
+                  temperature={hourlyData.main.temp}
                   icon={weatherIcons[hourlyData.weather[0].icon]}
-                  min={hourlyData.main.temp_min}
-                  maxTemp={hourlyData.main.temp_max}
                 />
               ))}
             </div>
@@ -193,33 +194,30 @@ function ApiCall() {
       {/* First row ended here */}
 
       <div className="row">
-          <div className="col-sm-12 col-md-6 col-lg-4">
-            <div className="card bg-dark text-light">
+        <div className="col-sm-12 col-md-6 col-lg-4">
+          <div className="card bg-dark text-light text-center">
             <div>
-                  
-                  <h2 className="card-title text-left">Daily Forecast</h2>
-                </div>
-              <div className="card-body text-center">
-               
-                {dailyForecast.map((dailyData) => (
-                  <DailyForecast
-                    key={dailyData.dt}
-                    hour={dailyData.dt_txt.split(" ")[0]} // Extract only the date part
-                    icon={weatherIcons[dailyData.weather[0].icon]}
-                    min={dailyData.main.temp_min}
-                    maxTemp={dailyData.main.temp_max}
-                  />
-                ))}
-              </div>
+              <h2 className="card-title text-left">Daily Forecast</h2>
+            </div>
+            <div className="card-body text-center">
+              {dailyForecast.map((dailyData) => (
+                <DailyForecast
+                  key={dailyData.dt}
+                  hour={dailyData.dt_txt.split(" ")[0]} // Extract only the date part
+                  icon={weatherIcons[dailyData.weather[0].icon]}
+                  min={dailyData.main.temp_min}
+                  maxTemp={dailyData.main.temp_max}
+                />
+              ))}
             </div>
           </div>
-          <div className="col-sm-12 col-md-6 col-lg-4">
-            {console.log("dailyForecast", dailyForecast)}
-            <UV dailyData={dailyForecast} />
-          </div>
         </div>
+        <div className="col-sm-12 col-md-6 col-lg-4">
+          {console.log("dailyForecast", dailyForecast)}
+          <UV dailyData={dailyForecast} />
+        </div>
+      </div>
       {/* Second column */}
-     
     </>
   );
 }

@@ -6,26 +6,12 @@ const fetchDailyForecast = ({ hour, maxTemp, min, icon }) => {
  
     return (
     
-        <div>
-          <table>
-            <td>
-              <tr>
-                {hour}
-              </tr>
-            </td>
-            <td>
-              <tr>
-                <i className={icon}></i>
-              </tr>
-              
-            </td>
-            <td>
-              <tr>
-                {maxTemp}---{min}
-              </tr>
-            </td>
-          </table>
-        </div>
+      <div className="d-inline-flex">
+      <p>{hour}</p>
+      
+      <p>{min}&deg;C----------{maxTemp}&deg;C</p>
+      <i>{icon}</i>
+    </div>
      
     );
   }
