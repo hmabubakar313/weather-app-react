@@ -2,12 +2,17 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import DailyForecast from "./DailyForecast";
 import HourlyForecast from "./HourlyForecast";
-import CreateWeatherChart from "./ChartForecast";
+// import CreateWeatherChart from "./ChartForecast";
 import UV from "./UV";
+import SunTime from "./SunTime";
+import Aqi from "./Aqi";
+
 function ApiCall() {
   const weatherKey = "970e51d81ae2059072ee1e195d4a3db5";
   const startDate = new Date("2023-10-01T00:00:00Z");
   const endDate = new Date("2023-12-31T23:59:59Z");
+  const lat = 31.5204;
+  const long = 74.3587;
 
   const startTimestamp = Math.floor(startDate.getTime() / 1000);
   const endTimestamp = Math.floor(endDate.getTime() / 1000);
@@ -16,6 +21,10 @@ function ApiCall() {
   const [locations, setLocations] = useState("Lahore");
   const [dailyForecast, setDailyForecast] = useState([]);
   const [hourlyForecast, sethourlyForecast] = useState([]);
+  const [uvi, setUVI] = useState([]);
+  const [sunSet, setSunSet] = useState([]);
+  const [sunRise, setSunRise] = useState([]);
+  const [aqi, setAqi] = useState([]);
 
   const weatherIcons = {
     "01d": "fas fa-sun",
@@ -123,6 +132,7 @@ function ApiCall() {
         const response = await axios.get(
           `http://api.openweathermap.org/data/2.5/forecast?q=${locations}&APPID=${weatherKey}&units=metric&cnt=7&start_date=${startTimestamp}&end_date=${endTimestamp}`
         );
+        console.log("response", response);
         const dailyData = response.data.list;
 
         console.log("DailyForecast", dailyData);
@@ -138,7 +148,7 @@ function ApiCall() {
           `http://api.openweathermap.org/data/2.5/forecast?q=${locations}&APPID=${weatherKey}&units=metric`
         );
 
-        const hourlyData = response.data.list.slice(0, 10);
+        const hourlyData = response.data.list.slice(0, 8);
         console.log("in the fetch hourly forecast", hourlyData);
 
         // const hourlyData = response.data.list;
@@ -151,73 +161,141 @@ function ApiCall() {
 
     fetchDailyForecast();
     fetchHourlyForecast();
+    UVI();
+    sunSetsunRise();
+    getAQI();
   }, []);
+  const UVI = async () => {
+    try {
+      const response = await axios.get(
+        `http://api.openweathermap.org/data/2.5/uvi?lat=${lat}&lon=${long}&appid=${weatherKey}`
+      );
+
+      const uvi = response.data.value;
+      setUVI(uvi);
+      console.log("UV Index:", uvi);
+    } catch (error) {
+      console.error("Error fetching UV index:", error);
+    }
+  };
+
+  const sunSetsunRise = async () => {
+    try {
+      const response = await axios.get(
+        `http://api.openweathermap.org/data/2.5/forecast?q=${locations}&APPID=${weatherKey}&units=metric&cnt=7&start_date=${startTimestamp}&end_date=${endTimestamp}`
+      );
+
+      const sunriseTimestamp = response.data.city.sunrise;
+      const sunsetTimestamp = response.data.city.sunset;
+
+      const sunriseDate = new Date(sunriseTimestamp * 1000);
+      const sunsetDate = new Date(sunsetTimestamp * 1000);
+
+      const formattedSunrise = sunriseDate.toLocaleTimeString();
+      const formattedSunset = sunsetDate.toLocaleTimeString();
+
+      console.log("Sunrise:", formattedSunrise);
+      console.log("Sunset:", formattedSunset);
+
+      setSunRise(formattedSunrise);
+      setSunSet(formattedSunset);
+    } catch (error) {
+      console.error("Error fetching sunrise/sunset forecast:", error);
+    }
+  };
+
+  const getAQI = async () => {
+    try {
+      const response = await axios.get(
+        `http://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${long}&appid=${weatherKey}`
+      );
+
+      const aqi = response.data.list[0].main.aqi;
+      setAqi(aqi);
+      // console.log("aqi", aqiValue);
+    } catch (error) {
+      console.error("Error fetching AQI:", error);
+    }
+  };
+
+  // Call the function to get AQI
 
   return (
     <>
       <div className="row">
-        <div className="container-fluid p-0">
-          {dailyForecast && dailyForecast.length > 0 ? (
-            <div className="weather-data">
-              <h1 className="location">{locations}</h1>
-              <h2 className="temp">{dailyForecast[0].main?.temp}°C</h2>
-              {/* <p className='long'>
+        <div className="col-sm-8 col-md-8 col-lg-8 ">
+          <div className="row">
+            <div className="col-sm-12 col-md-12 col-lg-12">
+              <div className="container-fluid p-0 ">
+                {dailyForecast && dailyForecast.length > 0 ? (
+                  <div className="weather-data">
+                    <h1 className="location">{locations}</h1>
+                    <h2 className="temp">{dailyForecast[0].main?.temp}°C</h2>
+                    {/* <p className='long'>
               Long: {dailyForecast[0]?.coord?.lon} Lat: {dailyForecast[0]?.coord?.lat}
         </p> */}
+                  </div>
+                ) : (
+                  <p>Loading weather data...</p>
+                )}
+              </div>
             </div>
-          ) : (
-            <p>Loading weather data...</p>
-          )}
-        </div>
-      </div>
+          </div>
 
-      <div className="row ">
-        <div className="col-sm-12 col-md-6 col-lg-8">
-          <div className="card text-light bg-dark">
-            <h2 className="card-title text-left text-light">
-              {" "}
-              Hourly Forecast
-            </h2>
-            <div className="card-body text-center">
-              {hourlyForecast.map((hourlyData) => (
-                <HourlyForecast
-                  key={hourlyData.dt}
-                  hour={hourlyData.dt_txt.split(" ")[1].slice(0, 5)}
-                  temperature={hourlyData.main.temp}
-                  icon={weatherIcons[hourlyData.weather[0].icon]}
-                />
-              ))}
+          <div className="row">
+            <div className="col-sm-6 col-md-6 col-lg-8">
+              <div className="card text-light bg-dark">
+                <h2 className="card-title text-left text-light">
+                  {" "}
+                  Hourly Forecast
+                </h2>
+                <div className="card-body">
+                  {hourlyForecast.map((hourlyData) => (
+                    <HourlyForecast
+                      key={hourlyData.dt}
+                      hour={hourlyData.dt_txt.split(" ")[1].slice(0, 5)}
+                      temperature={hourlyData.main.temp}
+                      icon={weatherIcons[hourlyData.weather[0].icon]}
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-sm-12 col-md-6 col-lg-4">
+              <div className="card bg-dark text-light">
+                <div>
+                  <h2 className="card-title text-left">Daily Forecast</h2>
+                </div>
+                <div className="card-body text-center">
+                  {dailyForecast.map((dailyData) => (
+                    <DailyForecast
+                      key={dailyData.dt}
+                      hour={dailyData.dt_txt.split(" ")[0]}
+                      icon={weatherIcons[dailyData.weather[0].icon]}
+                      min={dailyData.main.temp_min}
+                      maxTemp={dailyData.main.temp_max}
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+            <div className="col-sm-12 col-md-6 col-lg-4">
+              <Aqi aqi={aqi} />
+              <div className="row">
+                <div className="col-sm-6 col-md-6 col-lg-6">
+                  <UV uvi={uvi} />
+                </div>
+                <div className="col-sm-6 col-md-6 col-lg-6">
+                  <SunTime time={{ sunRise, sunSet }} />
+                 
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-      {/* First row ended here */}
-
-      <div className="row">
-        <div className="col-sm-12 col-md-6 col-lg-4">
-          <div className="card bg-dark text-light text-center">
-            <div>
-              <h2 className="card-title text-left">Daily Forecast</h2>
-            </div>
-            <div className="card-body text-center">
-              {dailyForecast.map((dailyData) => (
-                <DailyForecast
-                  key={dailyData.dt}
-                  hour={dailyData.dt_txt.split(" ")[0]} // Extract only the date part
-                  icon={weatherIcons[dailyData.weather[0].icon]}
-                  min={dailyData.main.temp_min}
-                  maxTemp={dailyData.main.temp_max}
-                />
-              ))}
-            </div>
-          </div>
-        </div>
-        <div className="col-sm-12 col-md-6 col-lg-4">
-          {console.log("dailyForecast", dailyForecast)}
-          <UV dailyData={dailyForecast} />
-        </div>
-      </div>
-      {/* Second column */}
     </>
   );
 }
