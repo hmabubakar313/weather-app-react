@@ -6,9 +6,11 @@ import HourlyForecast from "./HourlyForecast";
 import UV from "./UV";
 import SunTime from "./SunTime";
 import Aqi from "./Aqi";
+import Map from "./Maps";
 
 function ApiCall() {
   const weatherKey = "970e51d81ae2059072ee1e195d4a3db5";
+  const apiKey = "vYyUh2tVNbH47tYBvQ3rfKrbvf2AaB7f";
   const startDate = new Date("2023-10-01T00:00:00Z");
   const endDate = new Date("2023-12-31T23:59:59Z");
   const lat = 31.5204;
@@ -25,6 +27,7 @@ function ApiCall() {
   const [sunSet, setSunSet] = useState([]);
   const [sunRise, setSunRise] = useState([]);
   const [aqi, setAqi] = useState([]);
+  const [pop, setPop] = useState(0);
 
   const weatherIcons = {
     "01d": "fas fa-sun",
@@ -164,6 +167,7 @@ function ApiCall() {
     UVI();
     sunSetsunRise();
     getAQI();
+    POP();
   }, []);
   const UVI = async () => {
     try {
@@ -217,52 +221,61 @@ function ApiCall() {
       console.error("Error fetching AQI:", error);
     }
   };
-
-  // Call the function to get AQI
+  const POP = async () => {
+    try {
+      const response = await axios.get(
+        `http://api.openweathermap.org/data/2.5/forecast?q=${locations}&APPID=${weatherKey}&units=metric&cnt=7&start_date=${startTimestamp}&end_date=${endTimestamp}`
+      );
+      const forecastList = response.data.list;
+      const pop = forecastList[0].pop;
+      setPop(pop);
+      console.log("POP value for the first forecast time:", pop);
+    } catch (error) {
+      console.error("Error fetching weather data:", error);
+    }
+  };
 
   return (
     <>
       <div className="row">
-        <div className="col-sm-8 col-md-8 col-lg-8 ">
-          <div className="row">
-            <div className="col-sm-12 col-md-12 col-lg-12">
-              <div className="container-fluid p-0 ">
-                {dailyForecast && dailyForecast.length > 0 ? (
-                  <div className="weather-data">
-                    <h1 className="location">{locations}</h1>
-                    <h2 className="temp">{dailyForecast[0].main?.temp}°C</h2>
-                    {/* <p className='long'>
-              Long: {dailyForecast[0]?.coord?.lon} Lat: {dailyForecast[0]?.coord?.lat}
-        </p> */}
-                  </div>
-                ) : (
-                  <p>Loading weather data...</p>
-                )}
+        <div className="col-sm-12 col-md-12 col-lg-12">
+          <div className="container-fluid p-0">
+            {dailyForecast && dailyForecast.length > 0 ? (
+              <div className="weather-data">
+                <h1 className="location">{locations}</h1>
+                <h2 className="temp">{dailyForecast[0].main?.temp}°C</h2>
               </div>
-            </div>
+            ) : (
+              <p>Loading weather data...</p>
+            )}
           </div>
+        </div>
+      </div>
 
-          <div className="row">
-            <div className="col-sm-6 col-md-6 col-lg-8">
-              <div className="card text-light bg-dark">
-                <h2 className="card-title text-left text-light">
-                  {" "}
-                  Hourly Forecast
-                </h2>
-                <div className="card-body">
-                  {hourlyForecast.map((hourlyData) => (
-                    <HourlyForecast
-                      key={hourlyData.dt}
-                      hour={hourlyData.dt_txt.split(" ")[1].slice(0, 5)}
-                      temperature={hourlyData.main.temp}
-                      icon={weatherIcons[hourlyData.weather[0].icon]}
-                    />
-                  ))}
-                </div>
+      <div className="row">
+        <div className="row">
+          <div className="col-sm-6 col-md-6 col-lg-8">
+            <div className="card text-light bg-dark">
+              <h2 className="card-title text-left text-light">
+                Hourly Forecast
+              </h2>
+              <div className="card-body">
+                {hourlyForecast.map((hourlyData) => (
+                  <HourlyForecast
+                    key={hourlyData.dt}
+                    hour={hourlyData.dt_txt.split(" ")[1].slice(0, 5)}
+                    temperature={hourlyData.main.temp}
+                    icon={weatherIcons[hourlyData.weather[0].icon]}
+                  />
+                ))}
               </div>
             </div>
           </div>
-          <div className="row">
+          <div className="col-sm-4 col-md-4 col-lg-4">
+            <Map pop={pop} />
+          </div>
+        </div>
+        <div className="row">
             <div className="col-sm-12 col-md-6 col-lg-4">
               <div className="card bg-dark text-light">
                 <div>
@@ -293,9 +306,9 @@ function ApiCall() {
                 </div>
               </div>
             </div>
-          </div>
-        </div>
       </div>
+    </div>
+
     </>
   );
 }
