@@ -7,6 +7,10 @@ import UV from "./UV";
 import SunTime from "./SunTime";
 import Aqi from "./Aqi";
 import Map from "./Maps";
+import Wind from "./Wind";
+import PoP from "./PoP";
+
+
 
 function ApiCall() {
   const weatherKey = "970e51d81ae2059072ee1e195d4a3db5";
@@ -28,6 +32,9 @@ function ApiCall() {
   const [sunRise, setSunRise] = useState([]);
   const [aqi, setAqi] = useState([]);
   const [pop, setPop] = useState(0);
+  const [windSpeed, setWindSpeed] = useState(null);
+  const [windDirection, setWindDirection] = useState(null);
+  const [popNext24Hours,setPopNext24Hours] = useState([])
 
   const weatherIcons = {
     "01d": "fas fa-sun",
@@ -168,6 +175,7 @@ function ApiCall() {
     sunSetsunRise();
     getAQI();
     POP();
+    getWindData()
   }, []);
   const UVI = async () => {
     try {
@@ -230,11 +238,36 @@ function ApiCall() {
       const pop = forecastList[0].pop;
       setPop(pop);
       console.log("POP value for the first forecast time:", pop);
+      const popNext24Hours = forecastList
+      .slice(0, 8) // Consider the next 8 forecast times (assuming data is available every 3 hours)
+      .reduce((totalPop, forecast) => totalPop + forecast.pop, 0);
+      setPopNext24Hours(popNext24Hours);
+      console.log("Total POP for the next 24 hours:", popNext24Hours);
     } catch (error) {
       console.error("Error fetching weather data:", error);
     }
   };
-
+  const getWindData = async () => {
+    try {
+      const response = await axios.get(
+        `http://api.openweathermap.org/data/2.5/forecast?q=${locations}&APPID=${weatherKey}&units=metric&cnt=7`
+      );
+      const forecastList = response.data.list;
+  
+      // Assuming you want the wind data for the first forecast time
+      const windSpeed = forecastList[0].wind.speed;
+      const windDirection = forecastList[0].wind.deg;
+  
+      // Update your state or variables with the new wind data
+      setWindSpeed(windSpeed);
+      setWindDirection(windDirection);
+  
+      console.log("Wind data for the first forecast time:", windSpeed, windDirection);
+    } catch (error) {
+      console.error("Error fetching wind data:", error);
+    }
+  };
+  
   return (
     <>
       <div className="row">
@@ -271,7 +304,7 @@ function ApiCall() {
               </div>
             </div>
           </div>
-          <div className="col-sm-4 col-md-4 col-lg-4">
+          <div className="col-sm-6 col-md-6 col-lg-4">
             <Map pop={pop} />
           </div>
         </div>
@@ -306,6 +339,13 @@ function ApiCall() {
                 </div>
               </div>
             </div>
+            <div className="col-sm-6 col-md-6 col-lg-2">
+            <Wind speed={windSpeed} direction={windDirection} />
+            </div>
+            <div className="col-sm-6 col-md-6 col-lg-2">
+            <PoP pop={pop} popNext24Hours={popNext24Hours} />
+            </div>
+          
       </div>
     </div>
 
